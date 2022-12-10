@@ -31,8 +31,37 @@ bool checkIfAllZero(int numbers[]) {
     return true;
 }
 
+void removeSquare(int numbers[], int size, int line) {
+    if (size == 1){
+        numbers[line]--;
+    }
+    else{
+        for(int i = line; i <= line + size; i++) {
+            numbers[i] -= size;
+        }
+    }
+}
+
+void addSquare(int numbers[], int size, int line) {
+    if (size == 1){
+        numbers[line]++;
+    }
+    else{
+        for(int i = line; i <= line + size; i++) {
+            numbers[i] += size;
+        }
+    }
+}
+
 int findNumberOfConfig(int numbers[]) {
+
+    for(int j = 0; j<lines; j++) {
+                printf("%d  ", numbers[j]);
+    }
+    printf("\n");
+
     if(checkIfAllZero(numbers)){
+        numberOfConfig++;
         return 1;
     }
     else{
@@ -40,11 +69,10 @@ int findNumberOfConfig(int numbers[]) {
 
         for(int i = 1; i <= line + 1; i++) {
 
-            if(line + 1 - i >= 0 && numbers[line] - i >= 0) {
-                numbers[line] -= i;
-                numberOfConfig += findNumberOfConfig(numbers);
-                numbers[line] += i;
-                printf("%d\n",numberOfConfig);
+            if(line + i <= lines && numbers[line] - i >= 0) {
+                removeSquare(numbers, i, line);
+                findNumberOfConfig(numbers);
+                addSquare(numbers, i, line);
             }
 
             else {
