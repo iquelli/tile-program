@@ -22,6 +22,9 @@ int findRightPosition(vector<int> numbers) {
             biggest = numbers[i];
             index = i;
         }
+        if(biggest == lines) {
+            return index;
+        }
     }
 
     return index;
