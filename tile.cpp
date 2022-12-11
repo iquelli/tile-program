@@ -9,14 +9,14 @@ int lines;
 map<vector<int>, long int> calculatedValues;
 
 
-vector<int> create_copy(vector<int> vec)
+vector<int> create_copy(vector<int> &vec)
 {
     vector<int> v(vec);
     return v;
 }
 
 
-int findRightPosition(vector<int> numbers) {
+int findRightPosition(vector<int> &numbers) {
     int biggest = numbers[0];
     int index = 0;
 
@@ -34,7 +34,7 @@ int findRightPosition(vector<int> numbers) {
 }
 
 
-bool checkIfAllZero(vector<int> numbers) {
+bool checkIfAllZero(vector<int> &numbers) {
     for(int i=0; i<lines; i++) {
         if(numbers[i] != 0){
             return false;
@@ -45,10 +45,10 @@ bool checkIfAllZero(vector<int> numbers) {
 }
 
 
-bool squareFits(vector<int> numbers, int size, int line) {
-    int line1 = numbers[line];
+bool squareFits(vector<int> &numbers, int &size, int &line) {
+    int column = numbers[line];
     for(int i = line; i< line + size; i++){
-        if(!(i <= lines && numbers[i] - size >= 0 && numbers[i] == line1)) {
+        if(!(i <= lines && numbers[i] - size >= 0 && numbers[i] == column)) {
             return false;
         }
     }
@@ -56,7 +56,7 @@ bool squareFits(vector<int> numbers, int size, int line) {
 }
 
 
-long int findNumberOfConfig(vector<int> numbers) {
+long int findNumberOfConfig(vector<int> &numbers) {
     long int numberOfConfig = 0;
     auto itr = calculatedValues.find(numbers);
 
