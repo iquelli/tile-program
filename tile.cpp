@@ -55,9 +55,8 @@ int findNumberOfConfig(vector<int> numbers) {
     }
 
     else{
-
+        int line = findRightPosition(numbers);
         for(int i = 1; i <= lines; i++) {
-            int line = findRightPosition(numbers);
 
             if(squareFits(numbers, i, line)) {
                 vector<int> numbers2 = create_copy(numbers);
