@@ -56,7 +56,7 @@ bool squareFits(vector<int> numbers, int size, int line) {
 }
 
 
-int findNumberOfConfig(vector<int> numbers) {
+long int findNumberOfConfig(vector<int> numbers) {
     long int numberOfConfig = 0;
     auto itr = calculatedValues.find(numbers);
 
@@ -78,6 +78,7 @@ int findNumberOfConfig(vector<int> numbers) {
                 }
 
                 numberOfConfig += findNumberOfConfig(numbers2);
+                numbers2.clear();
             }
 
             else{
@@ -108,6 +109,7 @@ int main() {
     else {
         cout << findNumberOfConfig(numbers) << "\n";
         numbers.clear();
+        calculatedValues.clear();
     }
 
     return 0;
