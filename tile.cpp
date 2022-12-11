@@ -1,16 +1,19 @@
 #include <iostream>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 using namespace std;
 
 int columns;
 int lines;
-map<vector<int>, long int> calculatedValues;
+unordered_map<string, long int> calculatedValues;
 
+string turnToString(vector<int> &vec) {
+    string str(vec.begin(), vec.end());
+    return str;
+}
 
-vector<int> create_copy(vector<int> &vec)
-{
+vector<int> create_copy(vector<int> &vec) {
     vector<int> v(vec);
     return v;
 }
@@ -58,7 +61,7 @@ bool squareFits(vector<int> &numbers, int &size, int &line) {
 
 long int findNumberOfConfig(vector<int> &numbers) {
     long int numberOfConfig = 0;
-    auto itr = calculatedValues.find(numbers);
+    auto itr = calculatedValues.find(turnToString(numbers));
 
     if (checkIfAllZero(numbers)) return 1;
 
@@ -69,16 +72,16 @@ long int findNumberOfConfig(vector<int> &numbers) {
     else{
         int line = findRightPosition(numbers);
         for(int i = 1; i <= lines; i++) {
-
             if(squareFits(numbers, i, line)) {
-
-                vector<int> numbers2 = create_copy(numbers);
                 for(int j = line; j < line + i; j++) { // removes the square
-                    numbers2[j] -= i;
+                    numbers.at(j) -= i;
                 }
 
-                numberOfConfig += findNumberOfConfig(numbers2);
-                numbers2.clear();
+                numberOfConfig += findNumberOfConfig(numbers);
+
+                for(int j = line; j < line + i; j++) { // adds back the square
+                    numbers.at(j) += i;
+                }
             }
 
             else{
@@ -86,7 +89,7 @@ long int findNumberOfConfig(vector<int> &numbers) {
             }
         }
 
-        calculatedValues.insert({numbers, numberOfConfig});
+        calculatedValues.insert({turnToString(numbers), numberOfConfig});
     }
 
     return numberOfConfig; 
@@ -99,7 +102,7 @@ int main() {
     scanf("%d", &lines);
     scanf("%d", &columns);
 
-    vector<int> numbers(lines); // initializes vector
+    vector<int> numbers(lines); // initializes the  vector
 
     for(int i= 0; i < lines; i++){
         cin >> numbers[i];
