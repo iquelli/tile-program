@@ -28,7 +28,6 @@ int findRightPosition(vector<int> numbers) {
 }
 
 bool checkIfAllZero(vector<int> numbers) {
-    printf("entrou aqui\n");
     for(int i=0; i<lines; i++) {
         if(numbers[i] != 0){
             return false;
@@ -39,11 +38,9 @@ bool checkIfAllZero(vector<int> numbers) {
 }
 
 bool squareFits(vector<int> numbers, int size, int line) {
-    printf("line: %d    ", line);
-    printf("size: %d\n", size);
-
+    int line1 = numbers[line];
     for(int i = line; i< line + size; i++){
-        if(!(i <= lines && numbers[i] - size >= 0)) {
+        if(!(i <= lines && numbers[i] - size >= 0 && numbers[i] == line1)) {
             return false;
         }
     }
@@ -54,17 +51,13 @@ int findNumberOfConfig(vector<int> numbers) {
 
     if(checkIfAllZero(numbers)){
         numberOfConfig++;
-        return 1;
+        return 0;
     }
 
     else{
 
         for(int i = 1; i <= lines; i++) {
             int line = findRightPosition(numbers);
-            for(int j = 0; j<lines; j++) {
-                printf("%d  ", numbers[j]);
-            }
-            printf("\n\n");
 
             if(squareFits(numbers, i, line)) {
                 vector<int> numbers2 = create_copy(numbers);
