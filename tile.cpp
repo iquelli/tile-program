@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstdio>
+#include <vector>
 
 using namespace std;
 
@@ -7,7 +7,13 @@ int columns;
 int lines;
 int numberOfConfig = 0;
 
-int findRightPosition(int numbers[]) {
+vector<int> create_copy(vector<int> vec)
+{
+    vector<int> v(vec);
+    return v;
+}
+
+int findRightPosition(vector<int> numbers) {
     int biggest = numbers[0];
     int index = 0;
 
@@ -21,7 +27,8 @@ int findRightPosition(int numbers[]) {
     return index;
 }
 
-bool checkIfAllZero(int numbers[]) {
+bool checkIfAllZero(vector<int> numbers) {
+    printf("entrou aqui\n");
     for(int i=0; i<lines; i++) {
         if(numbers[i] != 0){
             return false;
@@ -31,55 +38,50 @@ bool checkIfAllZero(int numbers[]) {
     return true;
 }
 
-void removeSquare(int numbers[], int size, int line) {
-    if (size == 1){
-        numbers[line]--;
-    }
-    else{
-        for(int i = line; i <= line + size; i++) {
-            numbers[i] -= size;
+bool squareFits(vector<int> numbers, int size, int line) {
+    printf("line: %d    ", line);
+    printf("size: %d\n", size);
+
+    for(int i = line; i< line + size; i++){
+        if(!(i <= lines && numbers[i] - size >= 0)) {
+            return false;
         }
     }
+    return true;
 }
 
-void addSquare(int numbers[], int size, int line) {
-    if (size == 1){
-        numbers[line]++;
-    }
-    else{
-        for(int i = line; i <= line + size; i++) {
-            numbers[i] += size;
-        }
-    }
-}
-
-int findNumberOfConfig(int numbers[]) {
-
-    for(int j = 0; j<lines; j++) {
-                printf("%d  ", numbers[j]);
-    }
-    printf("\n");
+int findNumberOfConfig(vector<int> numbers) {
 
     if(checkIfAllZero(numbers)){
         numberOfConfig++;
         return 1;
     }
+
     else{
-        int line = findRightPosition(numbers);
 
-        for(int i = 1; i <= line + 1; i++) {
+        for(int i = 1; i <= lines; i++) {
+            int line = findRightPosition(numbers);
+            for(int j = 0; j<lines; j++) {
+                printf("%d  ", numbers[j]);
+            }
+            printf("\n\n");
 
-            if(line + i <= lines && numbers[line] - i >= 0) {
-                removeSquare(numbers, i, line);
-                findNumberOfConfig(numbers);
-                addSquare(numbers, i, line);
+            if(squareFits(numbers, i, line)) {
+                vector<int> numbers2 = create_copy(numbers);
+                for(int j = line; j < line + i; j++) { // removes the square
+                    numbers2[j] -= i;
+                }
+
+                findNumberOfConfig(numbers2);
             }
 
-            else {
+            else{
                 break;
             }
         }
     }
+
+    numbers.clear();
 
     return numberOfConfig; 
 }
@@ -89,10 +91,10 @@ int main() {
     scanf("%d", &lines);
     scanf("%d", &columns);
 
-    int numbers[lines];
+    vector<int> numbers(lines);
 
     for(int i= 0; i < lines; i++){
-        scanf("%d", &numbers[i]);
+        cin >> numbers[i];
     }
 
     if(lines == 0) {
@@ -100,6 +102,7 @@ int main() {
     }
     else {
         cout << findNumberOfConfig(numbers) << "\n";
+        numbers.clear();
     }
 
     return 0;
