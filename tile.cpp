@@ -1,39 +1,13 @@
 #include <iostream>
 #include <vector>
+#include <map>
 
 using namespace std;
 
 int columns;
 int lines;
 long int numberOfConfig = 0;
-int mod = (int) (1e9 + 9);
-
-long int calculateTotalPaths(int n, int m, vector< vector< int> > &mat) {
-    for(int i = 0; i < n; i++) {
-        for(int j =0; j<m; j++) {
-            cout << mat[i][j] << "  ";
-        }
-        cout << "\n";
-    }
-
-    vector<int> prev(m,0);
-    for(int i=0; i<n; i++) {
-        vector<int> cur(m,0);
-        for(int j = 0; j<m; j++) {
-            if(mat[i][j] == -1) cur[j] = 0;
-            else if(i == 0 && j == 0) cur[j] = 1;
-            else {
-                int up = 0, left = 0;
-                if(i>0) up = prev[j];
-                if(j>0) left = cur[j-1];
-                cur[j] = (up+left) %mod; 
-            }  
-        }
-
-        prev = cur;
-    }
-    return prev[m-1];
-}
+map<vector<int>, long int> calculatedValues;
 
 vector<int> create_copy(vector<int> vec)
 {
@@ -45,12 +19,12 @@ int findRightPosition(vector<int> numbers) {
     int biggest = numbers[0];
     int index = 0;
 
-    for(int i=0; i<lines; i++) {
+    for(int i=1; i<lines; i++) {
         if(numbers[i] > biggest) {
             biggest = numbers[i];
             index = i;
         }
-        if(biggest == lines) {
+        if(biggest == columns) {
             return index;
         }
     }
@@ -79,10 +53,16 @@ bool squareFits(vector<int> numbers, int size, int line) {
 }
 
 int findNumberOfConfig(vector<int> numbers) {
+    auto itr = calculatedValues.find(numbers);
+
+    if(itr != calculatedValues.end()) {
+        printf("entrou aqui\n");
+        return itr -> second;
+    }
 
     if(checkIfAllZero(numbers)){
-        numberOfConfig++;
-        return 0;
+        itr->second += 1;
+        return itr->second;
     }
 
     else{
@@ -90,12 +70,14 @@ int findNumberOfConfig(vector<int> numbers) {
         for(int i = 1; i <= lines; i++) {
 
             if(squareFits(numbers, i, line)) {
+
                 vector<int> numbers2 = create_copy(numbers);
                 for(int j = line; j < line + i; j++) { // removes the square
                     numbers2[j] -= i;
                 }
 
-                findNumberOfConfig(numbers2);
+                itr->second = findNumberOfConfig(numbers2);
+                calculatedValues.insert({numbers, itr->second});
             }
 
             else{
@@ -104,34 +86,26 @@ int findNumberOfConfig(vector<int> numbers) {
         }
     }
 
-    numbers.clear();
-
-    return numberOfConfig; 
+    return itr->second; 
 }
 
 int main() {
-    
+    bool allZero = true;
+
     scanf("%d", &lines);
     scanf("%d", &columns);
 
-    vector<int> numbers(lines);
-    //initializes vector
-    vector<vector<int>> grid(lines, vector<int>(columns, 0));
+    vector<int> numbers(lines); // initializes vector
 
     for(int i= 0; i < lines; i++){
         cin >> numbers[i];
-        for(int j=numbers[i]; j < columns; j++) {
-            grid[i][j] = -1;
-        }
+        if(numbers[i] != 0) allZero = false;
     }
 
-    if(lines == 0) {
+    if(lines == 0 || allZero) {
         cout << "0\n";
     }
     else {
-        int paths = calculateTotalPaths(lines, columns, grid);
-        grid.clear();
-        cout << paths <<"\n";
         cout << findNumberOfConfig(numbers) << "\n";
         numbers.clear();
     }
