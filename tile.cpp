@@ -1,21 +1,20 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-
+#include <cstring>
+#include <string>
 using namespace std;
 
 int columns;
 int lines;
-unordered_map<string, long int> calculatedValues;
+unordered_map<unsigned long int, unsigned long int> calculatedValues(33554444);
 
-string turnToString(vector<int> &vec) {
-    string str(vec.begin(), vec.end());
-    return str;
-}
-
-vector<int> create_copy(vector<int> &vec) {
-    vector<int> v(vec);
-    return v;
+unsigned long int turnToInt(const vector<int> &V) {
+        unsigned long int hash = V.size();
+        for(auto &i : V) {
+            hash ^= i + 0x9e3779b9 + (hash << 6) + (hash >> 2) + (hash << i);
+        }
+        return hash;
 }
 
 
@@ -59,9 +58,10 @@ bool squareFits(vector<int> &numbers, int &size, int &line) {
 }
 
 
-long int findNumberOfConfig(vector<int> &numbers) {
-    long int numberOfConfig = 0;
-    auto itr = calculatedValues.find(turnToString(numbers));
+unsigned long int findNumberOfConfig(vector<int> &numbers) {
+    unsigned long int numberOfConfig = 0;
+    unsigned long int hash = turnToInt(numbers);
+    auto itr = calculatedValues.find(hash);
 
     if (checkIfAllZero(numbers)) return 1;
 
@@ -89,7 +89,7 @@ long int findNumberOfConfig(vector<int> &numbers) {
             }
         }
 
-        calculatedValues.insert({turnToString(numbers), numberOfConfig});
+        calculatedValues.insert({hash, numberOfConfig});
     }
 
     return numberOfConfig; 
